@@ -1,8 +1,8 @@
-# ITBench SRE agent
+# ITBench SRE Agent
 
 This repository contains the baseline **Site Reliability Engineering (SRE) agent** for [ITBench](https://github.com/IBM/ITBench), a benchmark for evaluating AI agents on real-world IT operations scenarios.
 
-The SRE agent is designed to identify and remediate reliability issues in Kubernetes environments. It connects to observability tools and services deployed by ITBench scenarios and uses LLM reasoning to detect problems, analyze telemetry, and take corrective actions.
+The SRE Agent is designed to identify and remediate reliability issues in Kubernetes environments. It connects to observability tools and services deployed by ITBench scenarios and uses LLM reasoning to detect problems, analyze telemetry, and take corrective actions.
 
 ---
 

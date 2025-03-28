@@ -40,8 +40,9 @@ class NL2MetricsCustomToolInput(BaseModel):
 
 class NL2MetricsCustomTool(BaseTool, GrafanaBaseClient):
     name: str = "NL2Metrics Tool"
-    description: str = "Converts natural language to PromQL queries and execute them to access metrics from Prometheus via the Grafana API. When using the NL2Metrics Tool you could ask queries like: get the average CPU usage of a pod-456 in namespace complex-us over the last hour get the network received bytes of a pod-789 in namespace simple-us over the last 10 minutes get the total memory utilization by the deployment called front in namespace simple-us currently"
+    description: str = "Generates and executes PromQL queries to retrieve metrics from Prometheus via the Grafana API. Use this tool to query resource usage metrics (CPU, memory, network, etc.) for specific Kubernetes entities. Example queries:'Get the average CPU usage of `pod-456` in namespace `complex-us` over the last hour.', 'Retrieve the network received bytes for `pod-789` in namespace `simple-us` over the last 10 minutes.', 'Fetch the total memory utilization of deployment `front` in namespace `simple-us` currently.'"
     llm_backend: Any = None
+    cache_function: bool = False
     args_schema: Type[BaseModel] = NL2MetricsCustomToolInput
 
     def _run(self, nl_query: str) -> str:

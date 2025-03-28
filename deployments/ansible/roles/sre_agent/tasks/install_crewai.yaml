@@ -8,16 +8,6 @@
   tags:
     - sre_agent
 
-- name: Clone Agent Analytics SDK
-  ansible.builtin.shell: "source {{ conda_sh_directory }} && conda activate {{ conda_env_directory }} && git clone --branch v0.3.2-with-pip-changes https://{{ agent_analytics_sdk_username }}:{{ agent_analytics_sdk_token }}@github.ibm.com/Rohan-Arora/agent-analytics-sdk.git /runner/agent-analytics-sdk"
-  register: shell_output_analytics_sdk
-  retries: 3
-  delay: 10
-  until: shell_output_analytics_sdk.rc == 0
-  tags:
-   - sre_agent
-  when: agent_analytics_sdk_username is defined and agent_analytics_sdk_token is defined
-
 - name: Run CrewAI install
   ansible.builtin.shell: "source {{ conda_sh_directory }} && conda activate {{ conda_env_directory }} && cd {{ sre_agent_directory }} && crewai install"
   register: shell_output_crewai_install_env

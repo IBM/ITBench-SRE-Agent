@@ -21,8 +21,8 @@ from .litellm_backend import LiteLLMBackend
 
 load_dotenv()
 
-global PROVIDER_AGENTS, MODEL_AGENTS, BASE_URL_AGENTS, API_VERSION_AGENTS, API_KEY_AGENTS, REASONING_EFFORT_AGENTS, SEED_AGENTS, TOP_P_AGENTS, TEMPERATURE_AGENTS, THINKING_AGENTS, THINKING_BUDGET_AGENTS, MAX_TOKENS_AGENTS
-global PROVIDER_TOOLS, MODEL_TOOLS, BASE_URL_TOOLS, API_VERSION_TOOLS, API_KEY_TOOLS, REASONING_EFFORT_TOOLS, SEED_TOOLS, TOP_P_TOOLS, TEMPERATURE_TOOLS, THINKING_TOOLS, THINKING_BUDGET_TOOLS, MAX_TOKENS_TOOLS
+global PROVIDER_AGENTS, MODEL_AGENTS, URL_AGENTS, API_VERSION_AGENTS, API_KEY_AGENTS, REASONING_EFFORT_AGENTS, SEED_AGENTS, TOP_P_AGENTS, TEMPERATURE_AGENTS, THINKING_AGENTS, THINKING_BUDGET_AGENTS, MAX_TOKENS_AGENTS
+global PROVIDER_TOOLS, MODEL_TOOLS, URL_TOOLS, API_VERSION_TOOLS, API_KEY_TOOLS, REASONING_EFFORT_TOOLS, SEED_TOOLS, TOP_P_TOOLS, TEMPERATURE_TOOLS, THINKING_TOOLS, THINKING_BUDGET_TOOLS, MAX_TOKENS_TOOLS
 
 try:
     PROVIDER_AGENTS = os.environ["PROVIDER_AGENTS"]
@@ -53,17 +53,17 @@ except KeyError:
     raise
 
 try:
-    BASE_URL_AGENTS = os.environ["BASE_URL_AGENTS"].rstrip("/")
+    URL_AGENTS = os.environ["URL_AGENTS"].rstrip("/")
 except KeyError:
-    BASE_URL_AGENTS = ""
-    print(f"Unable to find environment variable - BASE_URL_AGENTS.")
+    URL_AGENTS = ""
+    print(f"Unable to find environment variable - URL_AGENTS.")
     raise
 
 try:
-    BASE_URL_TOOLS = os.environ["BASE_URL_TOOLS"].rstrip("/")
+    URL_TOOLS = os.environ["URL_TOOLS"].rstrip("/")
 except KeyError:
-    BASE_URL_TOOLS = ""
-    print(f"Unable to find environment variable - BASE_URL_TOOLS.")
+    URL_TOOLS = ""
+    print(f"Unable to find environment variable - URL_TOOLS.")
     raise
 
 try:
@@ -145,12 +145,6 @@ except KeyError:
     print(f"Unable to find environment variable - API_VERSION_TOOLS.")
 
 try:
-    IS_NATIVE_FUNCTION_CALLING_SUPPORTED  = os.environ["IS_NATIVE_FUNCTION_CALLING_SUPPORTED"]
-except KeyError:
-    IS_NATIVE_FUNCTION_CALLING_SUPPORTED = False
-    print(f"Unable to find environment variable - IS_NATIVE_FUNCTION_CALLING_SUPPORTED.")
-
-try:
     THINKING_AGENTS  = os.environ["THINKING_AGENTS"]
 except KeyError:
     THINKING_AGENTS = ""
@@ -197,20 +191,18 @@ if PROVIDER_AGENTS == "watsonx" or PROVIDER_TOOLS == "watsonx":
 def get_llm_backend_for_agents():
     if PROVIDER_AGENTS.lower() == "rits":
         return LLM(model=f"openai/{MODEL_AGENTS}",
-                   base_url=BASE_URL_AGENTS,
+                   base_url=URL_AGENTS,
                    api_key="API_KEY",
                    api_version=API_VERSION_AGENTS,
                    seed=SEED_AGENTS,
                    top_p=TOP_P_AGENTS,
                    temperature=TEMPERATURE_AGENTS,
-                   reasoning_effort=REASONING_EFFORT_AGENTS,
                    max_tokens=MAX_TOKENS_AGENTS,
-                   thinking={ "type": "enabled", "budget_tokens": int(THINKING_BUDGET_AGENTS) },
                    extra_headers={'RITS_API_KEY': API_KEY_TOOLS}
                    )
     elif THINKING_AGENTS == "anthropic":
         return LLM(model=f"{PROVIDER_AGENTS}/{MODEL_AGENTS}",
-                   base_url=BASE_URL_AGENTS,
+                   base_url=URL_AGENTS,
                    api_key=API_KEY_AGENTS,
                    api_version=API_VERSION_AGENTS,
                    seed=SEED_AGENTS,
@@ -221,7 +213,7 @@ def get_llm_backend_for_agents():
                    )
     else:
         return LLM(model=f"{PROVIDER_AGENTS}/{MODEL_AGENTS}",
-                   base_url=BASE_URL_AGENTS,
+                   base_url=URL_AGENTS,
                    api_key=API_KEY_AGENTS,
                    api_version=API_VERSION_AGENTS,
                    seed=SEED_AGENTS,
@@ -238,7 +230,7 @@ def get_llm_backend_for_tools():
     if PROVIDER_TOOLS.lower() == "rits":
         return LiteLLMBackend(provider="openai",
                               model_name=MODEL_TOOLS,
-                              base_url=BASE_URL_TOOLS,
+                              url=URL_TOOLS,
                               api_key="API_KEY",
                               api_version=API_VERSION_TOOLS,
                               seed=SEED_TOOLS,
@@ -248,13 +240,12 @@ def get_llm_backend_for_tools():
                               max_tokens=MAX_TOKENS_TOOLS,
                               thinking_tools=THINKING_TOOLS,
                               thinking_budget_tools=THINKING_BUDGET_TOOLS,
-                              is_native_function_calling_supported=IS_NATIVE_FUNCTION_CALLING_SUPPORTED,
                               extra_headers={ 'RITS_API_KEY': API_KEY_TOOLS }
                               )
     else:
         return LiteLLMBackend(provider=PROVIDER_TOOLS,
                               model_name=MODEL_TOOLS,
-                              base_url=BASE_URL_TOOLS,
+                              url=URL_TOOLS,
                               api_key=API_KEY_TOOLS,
                               api_version=API_VERSION_TOOLS,
                               seed=SEED_TOOLS,
@@ -264,5 +255,4 @@ def get_llm_backend_for_tools():
                               max_tokens=MAX_TOKENS_TOOLS,
                               thinking_tools=THINKING_TOOLS,
                               thinking_budget_tools=THINKING_BUDGET_TOOLS,
-                              is_native_function_calling_supported=IS_NATIVE_FUNCTION_CALLING_SUPPORTED
                               )

@@ -38,10 +38,11 @@ class NL2KubectlCustomToolInput(BaseModel):
 
 class NL2KubectlCustomTool(BaseTool):
     name: str = "NL2Kubectl Tool"
-    description: str = "Converts natural language to kubectl commands and executes them. Can be used to get/describe/edit Kubernetes deployments, services, and other Kubernetes components. Only takes one query at a time. Keep queries simple and straight-forward. This tool cannot handle complex mutli-step queries. Remember that most kubectl queries require a namespace name. When using NL2Kubectl Tool you could ask queries like: get the yaml file for the deployment called back in the default namespace get the logs from the pod 123xyz in the complexdd namespace get all the services in the abc789 namespace describe the pod lol123 in the abc789 namespace"
+    description: str = "Converts natural language queries into **kubectl** commands and executes them to retrieve details about Kubernetes components (e.g., deployments, services, pods). **Only supports simple, single-step queries. Most kubectl queries require a namespace."
     llm_backend: Any
     is_remediation: bool = False
     god_mode: bool = False
+    cache_function: bool = False
     args_schema: Type[BaseModel] = NL2KubectlCustomToolInput
 
     def _run(self, nl_query: str) -> str:

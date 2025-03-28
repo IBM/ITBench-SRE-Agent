@@ -42,7 +42,7 @@
     msg: |-
       PROVIDER_AGENTS="{{ provider_agents }}"
       MODEL_AGENTS="{{ model_agents }}"
-      BASE_URL_AGENTS="{{ base_url_agents }}"
+      URL_AGENTS="{{ url_agents }}"
       API_VERSION_AGENTS="{{ api_version_agents }}"
       API_KEY_AGENTS="{{ api_key_agents }}" # pragma: allowlist secret
       SEED_AGENTS="{{ seed_agents }}"
@@ -52,9 +52,12 @@
       THINKING_AGENTS="{{ thinking_agents }}"
       THINKING_BUDGET_AGENTS="{{ thinking_budget_agents }}"
       MAX_TOKENS_AGENTS="{{ max_tokens_agents }}"
+      MODEL_EMBEDDING="{{ model_embedding }}"
+      URL_EMBEDDING="{{ url_embedding }}"
+      API_VERSION_EMBEDDING="{{ api_version_embedding }}"
       PROVIDER_TOOLS="{{ provider_tools }}"
       MODEL_TOOLS="{{ model_tools }}"
-      BASE_URL_TOOLS="{{ base_url_tools }}"
+      URL_TOOLS="{{ url_tools }}"
       API_VERSION_TOOLS="{{ api_version_tools }}"
       API_KEY_TOOLS="{{ api_key_tools }}" # pragma: allowlist secret
       SEED_TOOLS="{{ seed_tools }}"
@@ -64,8 +67,7 @@
       THINKING_TOOLS="{{ thinking_tools }}"
       THINKING_BUDGET_TOOLS="{{ thinking_budget_tools }}"
       MAX_TOKENS_TOOLS="{{ max_tokens_tools }}"
-      IS_NATIVE_FUNCTION_CALLING_SUPPORTED="{{ is_native_function_calling_supported if is_native_function_calling_supported is defined else 'False' }}"
-      GOD_MODE="{{ enable_god_mode if enable_god_mode is defined else 'False' }}"
+      GOD_MODE="{{ god_mode if god_mode is defined else 'False' }}"
       KUBECONFIG="{{ kubeconfig_path_inside_ee.stdout }}"
       GRAFANA_URL="{{ grafana_url }}"
       TOPOLOGY_URL="{{ topology_url }}"
@@ -87,11 +89,9 @@
 - name: Experiment-related metadata
   debug:
     msg: |-
-      RUN_UUID="{{ run_uuid }}"
-      SCENARIO_NUMBER="{{ scenario_number }}"
       PROVIDER_AGENTS="{{ provider_agents }}"
       MODEL_AGENTS="{{ model_agents }}"
-      BASE_URL_AGENTS="{{ base_url_agents }}"
+      URL_AGENTS="{{ url_agents }}"
       API_VERSION_AGENTS="{{ api_version_agents }}"
       API_KEY_AGENTS="{{ api_key_agents }}" # pragma: allowlist secret
       SEED_AGENTS="{{ seed_agents }}"
@@ -100,9 +100,13 @@
       REASONING_EFFORT_AGENTS="{{ reasoning_effort_agents }}"
       THINKING_AGENTS="{{ thinking_agents }}"
       THINKING_BUDGET_AGENTS="{{ thinking_budget_agents }}"
+      MAX_TOKENS_AGENTS="{{ max_tokens_agents }}"
+      MODEL_EMBEDDING="{{ model_embedding }}"
+      URL_EMBEDDING="{{ url_embedding }}"
+      API_VERSION_EMBEDDING="{{ api_version_embedding }}"
       PROVIDER_TOOLS="{{ provider_tools }}"
       MODEL_TOOLS="{{ model_tools }}"
-      BASE_URL_TOOLS="{{ base_url_tools }}"
+      URL_TOOLS="{{ url_tools }}"
       API_VERSION_TOOLS="{{ api_version_tools }}"
       API_KEY_TOOLS="{{ api_key_tools }}" # pragma: allowlist secret
       SEED_TOOLS="{{ seed_tools }}"
@@ -111,8 +115,8 @@
       REASONING_EFFORT_TOOLS="{{ reasoning_effort_tools }}"
       THINKING_TOOLS="{{ thinking_tools }}"
       THINKING_BUDGET_TOOLS="{{ thinking_budget_tools }}"
-      IS_NATIVE_FUNCTION_CALLING_SUPPORTED="{{ is_native_function_calling_supported if is_native_function_calling_supported is defined else 'False' }}"
-      GOD_MODE="{{ enable_god_mode if enable_god_mode is defined else 'False' }}"
+      MAX_TOKENS_TOOLS="{{ max_tokens_tools }}"
+      GOD_MODE="{{ god_mode if god_mode is defined else 'False' }}"
       KUBECONFIG="{{ kubeconfig_path_inside_ee.stdout }}"
       GRAFANA_URL="{{ grafana_url }}"
       TOPOLOGY_URL="{{ topology_url }}"
@@ -140,7 +144,7 @@
 
 - name: Upload metadata to S3 (parent)
   amazon.aws.s3_object:
-    endpoint_url: "https://s3.us-east-2.amazonaws.com"
+    endpoint_url: "{{ s3_endpoint_url }}"
     bucket: "{{ s3_bucket_name_for_results }}"
     object: "/{{ sre_agent_name__version_number }}/{{run_uuid}}/{{ scenario_number }}/metadata"
     src: "{{ sre_agent_directory }}/metadata"
@@ -151,7 +155,7 @@
 
 - name: Upload metadata to S3 (child)
   amazon.aws.s3_object:
-    endpoint_url: "https://s3.us-east-2.amazonaws.com"
+    endpoint_url: "{{ s3_endpoint_url }}"
     bucket: "{{ s3_bucket_name_for_results }}"
     object: "/{{ sre_agent_name__version_number }}/{{run_uuid}}/{{scenario_number}}/{{run_number}}/metadata"
     src: "{{ sre_agent_directory }}/metadata"
@@ -205,10 +209,10 @@
 
 - name: Upload structured-unstructured outputs to S3
   community.aws.s3_sync:
+    endpoint_url: "{{ s3_endpoint_url }}"
     bucket: "{{ s3_bucket_name_for_results }}"
     file_root: "/runner/outputs"
     key_prefix: "{{ sre_agent_name__version_number }}/{{run_uuid}}/{{scenario_number}}/{{run_number}}/outputs"
-    region: "us-east-2"
   tags:
     - sre_agent
   when: run_uuid is defined and scenario_number is defined and run_number is defined

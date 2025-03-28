@@ -47,13 +47,13 @@ class NL2TracesCustomTool(BaseTool, GrafanaBaseClient):
     name: str = "NL2Traces Tool"
     description: str = "Take in a natural language query or utterance and turn it into function arguments. This tool is for gathering traces from jaeger. When using NL2Traces Tool you could ask queries like: retrieve traces for payment-service for the last hour get traces for test-service for the last 15 minutes get GET traces for back-service for the last 15 minutes get POST traces from ticket-service for the last 5 minutes get POST traces from <service-name> for the last X minutes"
     llm_backend: Any = None
+    cache_function: bool = False
     args_schema: Type[BaseModel] = NL2TracesCustomToolInput
 
     def _run(self, nl_query: str) -> str:
         GrafanaBaseClient.model_post_init(self)
         try:
-            function_name, function_arguments, current_time = self._generate_jaeger_query(
-                prompt=nl_query)
+            function_name, function_arguments, current_time = self._generate_jaeger_query(prompt=nl_query)
             services = self._get_services()
             operations = self._get_operations(function_arguments['service'])
             lint_message = JaegerLinter().lint(function_arguments, services,
@@ -80,8 +80,7 @@ class NL2TracesCustomTool(BaseTool, GrafanaBaseClient):
 
         tools = [fd_query_jaeger_traces]
 
-        function_name, function_arguments = self.llm_backend.function_calling_inference(
-            system_prompt, input, tools)
+        function_name, function_arguments = self.llm_backend.inference(system_prompt, input, tools)
         logger.info(f"NL2Traces Tool NL prompt received: {prompt}")
         logger.info(
             f"NL2Traces Tool function arguments identified are: {function_name} {function_arguments}"

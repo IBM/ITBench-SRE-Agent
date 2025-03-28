@@ -27,7 +27,8 @@ logger = logging.getLogger(__name__)
 
 class GetAlertsCustomTool(BaseTool, GrafanaBaseClient):
     name: str = "GetAlerts Tool"
-    description: str = "Get alerts on the IT environment at present time via the Grafana API."
+    description: str = "Retrieves real-time alerts on the IT environment via the Grafana API."
+    cache_function: bool = False
 
     def _run(self) -> str:
         GrafanaBaseClient.model_post_init(self)

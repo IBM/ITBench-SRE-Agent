@@ -15,13 +15,14 @@
 
 import os
 
-from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
+# from chromadb.utils.embedding_functions.openai_embedding_function import OpenAIEmbeddingFunction
 from crewai import LLM, Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from dotenv import load_dotenv
 
 from lumyn.llm_backends.init_backend import (get_llm_backend_for_agents,
                                                     get_llm_backend_for_tools)
+from lumyn.tools.code_generation.nl2script import NL2ScriptCustomTool
 from lumyn.tools.grafana.get_alerts import GetAlertsCustomTool
 from lumyn.tools.grafana.nl2logs import NL2LogsCustomTool
 from lumyn.tools.grafana.nl2metrics import NL2MetricsCustomTool
@@ -158,8 +159,37 @@ class LumynCrew():
 
     @crew
     def crew(self) -> Crew:
+        if os.getenv("MODEL_EMBEDDING"):
+            if os.getenv("PROVIDER_AGENTS") == "azure":
+                memory = True
+                embedder = {
+                    "provider": "azure",
+                    "config": {
+                        "api_type": "azure",
+                        "api_key": os.getenv("API_KEY_AGENTS"),
+                        "api_base": os.getenv("URL_EMBEDDING"),
+                        "api_version": os.getenv("API_VERSION_EMBEDDING"),
+                        "model_name": os.getenv("MODEL_EMBEDDING")
+                    }
+                }
+            elif os.getenv("PROVIDER_AGENTS") == "watsonx":
+                memory = True
+                embedder = {
+                    "provider": "watson",
+                    "config": {
+                        "model": os.getenv("MODEL_EMBEDDING"),
+                        "api_url": os.getenv("URL_EMBEDDING"),
+                        "api_key": os.getenv("API_KEY_AGENTS"),
+                        "project_id": os.getenv("WX_PROJECT_ID"),
+                    }
+                }
+        else:
+            memory = False
+            embedder = None
 
         return Crew(agents=self.agents,
                     tasks=self.tasks,
                     process=Process.sequential,
+                    memory=memory,
+                    embedder=embedder,
                     verbose=True)

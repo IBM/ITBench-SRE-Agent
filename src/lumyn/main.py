@@ -18,6 +18,8 @@ import datetime
 import json
 import os
 import sys
+import time
+import subprocess
 
 from lumyn.crew import LumynCrew
 from lumyn.tools.grafana.get_alerts import GetAlertsCustomTool
@@ -97,6 +99,7 @@ def run():
     """
     Run the crew.
     """
+    subprocess.run('crewai reset-memories -a', shell=True, capture_output=False, text=True)
     kubectl = NL2KubectlCustomTool(llm_backend=get_llm_backend_for_tools())._execute_kubectl_command("kubectl cluster-info")
     if kubectl[1] != 0:
         raise Exception("KUBECONFIG is not configured correctly.")

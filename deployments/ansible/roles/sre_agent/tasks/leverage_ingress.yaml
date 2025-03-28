@@ -1,6 +1,6 @@
 ---
 - name: Get the Ingress URL of Grafana
-  ansible.builtin.shell: "KUBECONFIG={{ kubeconfig }} kubectl get ingress prometheus-grafana -n prometheus -o json"
+  ansible.builtin.shell: "KUBECONFIG={{ kubeconfig }} kubectl get ingress grafana -n grafana -o json"
   register: grafana_ingress
   retries: 5
   delay: 60
@@ -18,10 +18,10 @@
 
 - name: Set the Grafana URL
   set_fact:
-    grafana_url: "http://{{ grafana_ingress.stdout | from_json | json_query('status.loadBalancer.ingress[0].hostname') }}/prometheus"
+    grafana_url: "http://{{ grafana_ingress.stdout | from_json | json_query('status.loadBalancer.ingress[0].hostname') }}/grafana"
   when: ingress_hostname is defined and ingress_hostname | trim != ''
 
 - name: Set the Topology Monitor URL
   set_fact:
-    topology_url: "http://{{ grafana_ingress.stdout | from_json | json_query('status.loadBalancer.ingress[0].hostname') }}/prometheus"
+    topology_url: "http://{{ grafana_ingress.stdout | from_json | json_query('status.loadBalancer.ingress[0].hostname') }}/topology"
   when: ingress_hostname is defined and ingress_hostname | trim != ''

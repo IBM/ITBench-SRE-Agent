@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 class GetTopologyNodes(BaseTool, GrafanaBaseClient):
     name: str = "GetTopology Tool"
     description: str = "Get topology nodes describing the current IT environment."
+    cache_function: bool = False
 
     def _run(self) -> str:
         GrafanaBaseClient.model_post_init(self)

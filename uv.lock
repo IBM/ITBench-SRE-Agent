@@ -2107,6 +2107,7 @@ dependencies = [
     { name = "antlr4-python3-runtime" },
     { name = "crewai" },
     { name = "crewai-tools" },
+    { name = "ibm-watsonx-ai" },
     { name = "langchain-core" },
     { name = "langchain-ibm" },
     { name = "litellm" },
@@ -2121,6 +2122,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "antlr4-python3-runtime", specifier = "==4.10" },
+    { name = "ibm-watsonx-ai", specifier = ">=1.1.26" },
     { name = "crewai", specifier = "==0.105.0" },
     { name = "crewai-tools", specifier = "==0.37.0" },
     { name = "langchain-core", specifier = ">=0.3.0,<0.4" },

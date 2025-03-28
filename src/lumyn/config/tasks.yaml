@@ -1,6 +1,6 @@
 sre_diagnosis_tool_task:
   description: 
-    Diagnose the problem from the alert. Don't stop until you find all root causes of the issue. Use the tools provided to gather information to help you with diagnosis.
+    Diagnose the problem from the alert, continuing until you find all root causes of the issue. Use the tools provided to gather information to help you with diagnosis.
     Diagnosis needs to go as deep as possible. Make sure you check every entity that could possibly be related to the issue before coming to a final answer.
   expected_output: 
     Fault propagation chains indicating the independent paths along which the faults propagated and led to the alerts. Specify the root cause entity in each propagation chain.
@@ -15,14 +15,14 @@ diagnosis_json_generation_task:
     
 sre_remediation_task:
   description: 
-    Create remediation plans with concrete steps based on the incident diagnosis report. Then, use the tools provided to execute this plan.
+    Create and execute a remediation plan based on the incident diagnosis report. After each action, check if the alerts are resolved.
   expected_output: 
-    A list of remediation plans, each with a list of remediation steps.
+    A list of remediation plans with specific steps for mitigation.
   agent: sre_remediation_agent
 
 remediation_json_generation_task:
   description: >
-    Generate a JSON-structured remediation report.
+    Generate a structured JSON report on the remediation actions taken.
   expected_output: >
-    A JSON-structured remediation report listing all steps taken to mitigate the IT incident.
+    A JSON-structured remediation report detailing the steps taken to mitigate the incident.
   agent: sre_remediation_agent

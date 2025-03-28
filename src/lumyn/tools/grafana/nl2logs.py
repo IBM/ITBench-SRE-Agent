@@ -44,6 +44,7 @@ class NL2LogsCustomTool(BaseTool, GrafanaBaseClient):
     name: str = "NL2Logs Tool"
     description: str = "Converts natural language to LogQL queries and executes them to access logs (and other information) from Loki via the Grafana API. When using the NL2Logs Tool you could ask queries like: get the logs from the payment deployment get the logs from the worker-node-1 kubernetes host get the logs from the payment service with label app=payment NL2Logs only works for logs from services using their app name."
     llm_backend: Any = None
+    cache_function: bool = False
     args_schema: Type[BaseModel] = NL2LogsCustomToolInput
 
     def _run(self, nl_query: str) -> str:
@@ -77,8 +78,7 @@ class NL2LogsCustomTool(BaseTool, GrafanaBaseClient):
         
         tools = [fd_query_loki_logs]
         system_prompt = "Provide the correct tool call for querying loki logs using parameters provided in the input. For the LogQL query generate it using the input as instructions. Do not wrap the LogQL query in any tags or special formatting."
-        function_name, function_arguments = self.llm_backend.function_calling_inference(
-            system_prompt, input, tools)
+        function_name, function_arguments = self.llm_backend.inference(system_prompt, input, tools)
         
         logger.info(
             f"NL2Logs Tool function arguments identified are: {function_name} {function_arguments}"

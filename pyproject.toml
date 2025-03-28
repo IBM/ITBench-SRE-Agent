@@ -16,6 +16,7 @@ dependencies = [
     "promformat>=1.0.2",
     "antlr4-python3-runtime==4.10",
     "numpy==1.26.4",
+    "ibm-watsonx-ai>=1.1.26",
     "crewai-tools==0.37.0",
     "crewai==0.105.0",
     "litellm==1.60.2",

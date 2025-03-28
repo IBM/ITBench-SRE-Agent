@@ -1,5 +1,5 @@
 # Setup a remote or local cluster to run the ITBench
-Clone and follow the instructions in [this repo](https://github.com/IBM/it-bench-sample-scenarios/tree/main/sre). Setup a cluster, deploy the observability stack and a sample application, then inject a fault.
+Clone and follow the instructions in [this repo](https://github.com/IBM/ITBench-Scenarios/tree/main/sre#readme). Setup a cluster, deploy the observability stack and a sample application, then inject a fault.
 
 # Running with Docker/Podman
 The agent should always be run in a container in order to prevent harmful commands being run on the user's PC.  

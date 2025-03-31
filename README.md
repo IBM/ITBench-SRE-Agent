@@ -50,8 +50,13 @@ MAX_TOKENS_TOOLS=16000 # see above
 
 WX_PROJECT_ID="" # required only when using a watsonx model
 
+# Linux
 GRAFANA_URL="http://localhost:8080/grafana"
 TOPOLOGY_URL="http://localhost:8081"
+
+# Mac
+GRAFANA_URL="http://docker.host.internal:8080/grafana"
+TOPOLOGY_URL="http://docker.host.internal:8081"
 
 # DO NOT ALTER THESE VALUES
 AGENT_TASK_DIRECTORY="config"
@@ -76,9 +81,7 @@ docker build -t itbench-sre-agent .
 # Linux
 docker run --network=host -it itbench-sre-agent /bin/bash
 
-# Mac 
-# Change the Grafana URL in the .env from http://localhost:8080/grafana to http://docker.host.internal:8080/grafana
-# Change the Topology URL in the .env from http://localhost:8081 to http://docker.host.internal:8081
+# Mac
 docker run -it itbench-sre-agent /bin/bash
 ```
 6. Start the agent:

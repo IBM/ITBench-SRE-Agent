@@ -1,13 +1,13 @@
 # Running with Docker/Podman
 The agent should always be run in a container in order to prevent harmful commands being run on the user's PC.  
 
-1. Clone the repo
+1. Clone the repo.
 ```bash
 git clone git@github.com:IBM/itbench-sre-agent.git
 cd itbench-sre-agent
 ```
 
-2. Move your kubeconfig into the project root directory and rename it `config`
+2. Move the kubeconfig of the cluster on which ITBench is running into the root directory of this repo.
 
 3. Create a `.env` based on `.env.tmpl` by running:
 ```bash

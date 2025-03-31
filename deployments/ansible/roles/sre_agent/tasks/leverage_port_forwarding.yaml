@@ -16,7 +16,7 @@
   when: ingress_hostname is undefined or ingress_hostname | trim == ''
 
 - name: Kubectl port-forward on/for Grafana with dynamic port
-  ansible.builtin.shell: KUBECONFIG={{ kubeconfig }} kubectl -n prometheus port-forward svc/prometheus-grafana "{{ dynamic_port_for_grafana }}:80" --request-timeout=30m
+  ansible.builtin.shell: KUBECONFIG={{ kubeconfig }} kubectl -n grafana port-forward svc/grafana "{{ dynamic_port_for_grafana }}:80" --request-timeout=30m
   async: 1800
   poll: 0
   when: ingress_hostname is undefined or ingress_hostname | trim == ''

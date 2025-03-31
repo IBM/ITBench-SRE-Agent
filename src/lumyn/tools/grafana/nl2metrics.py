@@ -1,3 +1,18 @@
+# Copyright contributors to the ITBench project. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import logging
 import json
 import os
@@ -23,15 +38,15 @@ class NL2MetricsCustomToolInput(BaseModel):
     )
 
 
-class NL2MetricsCustomTool(GrafanaBaseClient, BaseTool):
+class NL2MetricsCustomTool(BaseTool, GrafanaBaseClient):
     name: str = "NL2Metrics Tool"
-    description: str = (
-        "Converts natural language to PromQL queries and execute them to access metrics from Prometheus via the Grafana API."
-    )
+    description: str = "Generates and executes PromQL queries to retrieve metrics from Prometheus via the Grafana API. Use this tool to query resource usage metrics (CPU, memory, network, etc.) for specific Kubernetes entities. Example queries:'Get the average CPU usage of `pod-456` in namespace `complex-us` over the last hour.', 'Retrieve the network received bytes for `pod-789` in namespace `simple-us` over the last 10 minutes.', 'Fetch the total memory utilization of deployment `front` in namespace `simple-us` currently.'"
     llm_backend: Any = None
+    cache_function: bool = False
     args_schema: Type[BaseModel] = NL2MetricsCustomToolInput
 
     def _run(self, nl_query: str) -> str:
+        GrafanaBaseClient.model_post_init(self)
         try:
             function_arguments = self._generate_promql_query(prompt=nl_query)
             lint_message = PromQLLinter.lint(function_arguments)

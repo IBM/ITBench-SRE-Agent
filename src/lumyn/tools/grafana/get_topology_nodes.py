@@ -36,12 +36,7 @@ class GetTopologyNodes(BaseTool, GrafanaBaseClient):
         GrafanaBaseClient.model_post_init(self)
         data = None
         try:
-            if "127.0.0.1" in self.grafana_url:
-                url = f"{self.topology_url}/nodes"
-            else:
-                base_url = "/".join(f"{self.grafana_url}".split('/')[:-1])
-                url = f"{base_url}/topology/nodes"
-            response = self._make_request("GET", url)
+            response = self._make_request("GET", f"{self.topology_url}/nodes")
             logger.info(f"GetTopologyNodesTool: {response.status_code}")
             logger.info(f"GetTopologyNodesTool: {response.content}")
             print(f"GetTopologyNodesTool: {response.status_code}")

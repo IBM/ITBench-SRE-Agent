@@ -20,6 +20,7 @@ dependencies = [
     "crewai-tools==0.37.0",
     "crewai==0.105.0",
     "litellm==1.60.2",
+    "pyyaml>=6.0.2",
 ]
 
 [project.scripts]

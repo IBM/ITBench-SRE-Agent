@@ -24,6 +24,7 @@ from crewai.tools.base_tool import BaseTool
 from pydantic import BaseModel, ConfigDict, Field
 
 from lumyn.tools.linting.promql_linter import PromQLLinter
+from lumyn.config.tools import NL2MetricsCustomToolInputPrompt, NL2MetricsCustomToolPrompt, NL2MetricsSystemPrompt, NL2MetricsPrompt
 
 from .grafana_base_client import GrafanaBaseClient
 
@@ -34,13 +35,13 @@ logger = logging.getLogger(__name__)
 class NL2MetricsCustomToolInput(BaseModel):
     nl_query: str = Field(
         title="PromQL Query",
-        description="PromQL query to execute.",
+        description=NL2MetricsCustomToolInputPrompt,
     )
 
 
 class NL2MetricsCustomTool(BaseTool, GrafanaBaseClient):
     name: str = "NL2Metrics Tool"
-    description: str = "Generates and executes PromQL queries to retrieve metrics from Prometheus via the Grafana API. Use this tool to query resource usage metrics (CPU, memory, network, etc.) for specific Kubernetes entities. Example queries:'Get the average CPU usage of `pod-456` in namespace `complex-us` over the last hour.', 'Retrieve the network received bytes for `pod-789` in namespace `simple-us` over the last 10 minutes.', 'Fetch the total memory utilization of deployment `front` in namespace `simple-us` currently.'"
+    description: str = NL2MetricsCustomToolPrompt
     llm_backend: Any = None
     cache_function: bool = False
     args_schema: Type[BaseModel] = NL2MetricsCustomToolInput
@@ -58,16 +59,8 @@ class NL2MetricsCustomTool(BaseTool, GrafanaBaseClient):
             return f"NL2Metrics Tool failed with: {exc}"
 
     def _generate_promql_query(self, prompt: str) -> str:
-
-        with open(
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "in_context_examples",
-                             "grafana_prometheus.txt"), "r") as f:
-            prom_icl = f.read()
-
         time_in_seconds = time.time()
-        input = f"{prom_icl}\n\nWrite a promql query to do the following: {prompt}\n\nThe current time in seconds is {time_in_seconds}"
-        system_prompt = "You write PromQL queries. Answer with only the correct PromQL query. The formatting should always be like this: ```promql\n<promql query>\n```"
-        function_arguments = self.llm_backend.inference(system_prompt, input)
+        function_arguments = self.llm_backend.inference(NL2MetricsSystemPrompt, NL2MetricsPrompt + prompt + f"\nThe current time in seconds is {time_in_seconds}")
         logger.info(f"NL2Metrics Tool NL prompt received: {prompt}")
         logger.info(f"NL2Metrics Tool function arguments identified are: {function_arguments}")
         print(f"NL2Metrics Tool NL prompt received: {prompt}")

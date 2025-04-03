@@ -22,6 +22,7 @@ from typing import Any, Dict, Optional, Type
 from crewai.tools.base_tool import BaseTool
 from pydantic import BaseModel, Field
 from lumyn.tools.linting.kubectl_linter import KubectlLinter
+from lumyn.config.tools import NL2KubectlCustomToolInputPrompt, NL2KubectlCustomToolPrompt, NL2KubectlSystemPrompt, NL2KubectlPrompt
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -30,20 +31,19 @@ logger = logging.getLogger(__name__)
 class NL2KubectlCustomToolInput(BaseModel):
     nl_query: str = Field(
         title="NL Query",
-        description="NL query to execute. Keep queries simple and straight-forward.\
-        This tool cannot handle complex mutli-step queries.\
-        Make sure to include a namespace where required.",
+        description=NL2KubectlCustomToolInputPrompt,
     )
 
 
 class NL2KubectlCustomTool(BaseTool):
     name: str = "NL2Kubectl Tool"
-    description: str = "Converts natural language queries into **kubectl** commands and executes them to retrieve details about Kubernetes components (e.g., deployments, services, pods). **Only supports simple, single-step queries. Most kubectl queries require a namespace."
+    description: str = NL2KubectlCustomToolPrompt
     llm_backend: Any
     is_remediation: bool = False
     god_mode: bool = False
     cache_function: bool = False
     args_schema: Type[BaseModel] = NL2KubectlCustomToolInput
+    output_limit: int = 8000
 
     def _run(self, nl_query: str) -> str:
         harmful_commands = ["rm ", "kubectl edit ", "kubectl proxy ", "kubectl port-forward ", "kubectl exec -it ", "kubectl attach -i ", "kubectl run -i ", "kubectl port-forward ", "kubectl cp "]
@@ -61,8 +61,8 @@ class NL2KubectlCustomTool(BaseTool):
                     if user_input == "y":
                         for harmful_command in harmful_commands:
                             if command.startswith(harmful_command):
-                                return f"Potentially harmful command found. Execution is not allowed. The harmful command was: {command}"
-                        return self._execute_kubectl_command(command)[0][0:8000]
+                                return f"Potentially harmful command found. Execution is not allowed. The harmful command was: {command}. Do not use commands that will create an interactive shell."
+                        return self._execute_kubectl_command(command)[0][0:self.output_limit]
                     else:
                         problem_description = input("What is wrong with the command?")
                         retry = (
@@ -78,19 +78,13 @@ class NL2KubectlCustomTool(BaseTool):
                     for harmful_command in harmful_commands:
                         if command.startswith(harmful_command):
                             return f"Potentially harmful command found. Execution is not allowed. The harmful command was: {command}"
-                    return self._execute_kubectl_command(command)[0][0:8000]
+                    return self._execute_kubectl_command(command)[0][0:self.output_limit]
             except Exception as exc:
                     logger.error(f"NL2Kubectl Tool failed with: {exc}")
                     return f"NL2Kubectl Tool failed with: {exc}"
 
     def _generate_kubectl_command(self, prompt: str) -> str:
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "in_context_examples", "kubectl.txt"),
-                  "r") as f:
-            kubectl_icl = f.read()
-
-        system_prompt = f"{kubectl_icl} You write kubectl commands. Answer with only the correct kubectl command. The formatting should always be like this: ```bash\n<kubectl command>\n```"
-
-        response = self.llm_backend.inference(system_prompt, prompt)
+        response = self.llm_backend.inference(NL2KubectlSystemPrompt, NL2KubectlPrompt + prompt)
         command_of_interest = re.search(r'```bash\n(.*?)\n```', response, re.DOTALL).group(1).strip()
         logger.info(f"NL2Kubectl Tool NL prompt received: {prompt}")
         logger.info(f"NL2Kubectl Tool response received: {response}")

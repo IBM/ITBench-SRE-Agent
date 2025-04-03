@@ -1,5 +1,4 @@
 version = 1
-revision = 1
 requires-python = ">=3.10, <=3.13"
 resolution-markers = [
     "python_full_version < '3.11'",
@@ -2116,15 +2115,16 @@ dependencies = [
     { name = "panel" },
     { name = "promformat" },
     { name = "python-dotenv" },
+    { name = "pyyaml" },
     { name = "streamlit" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "antlr4-python3-runtime", specifier = "==4.10" },
-    { name = "ibm-watsonx-ai", specifier = ">=1.1.26" },
     { name = "crewai", specifier = "==0.105.0" },
     { name = "crewai-tools", specifier = "==0.37.0" },
+    { name = "ibm-watsonx-ai", specifier = ">=1.1.26" },
     { name = "langchain-core", specifier = ">=0.3.0,<0.4" },
     { name = "langchain-ibm", specifier = ">=0.3.0" },
     { name = "litellm", specifier = "==1.60.2" },
@@ -2133,6 +2133,7 @@ requires-dist = [
     { name = "panel", specifier = ">=1.5.2" },
     { name = "promformat", specifier = ">=1.0.2" },
     { name = "python-dotenv", specifier = ">=1.0" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "streamlit", specifier = ">=1.39.0" },
 ]
 

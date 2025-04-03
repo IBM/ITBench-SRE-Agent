@@ -1,4 +1,4 @@
-# Running with Docker/Podman
+# Running with Docker
 The agent should always be run in a container in order to prevent harmful commands being run on the user's PC.  
 
 1. Clone the repo.
@@ -26,7 +26,7 @@ MODEL_AGENTS="" # agent model or checkpoint name, e.g. ibm/granite-3-2-8b-instru
 URL_AGENTS="" # agent model url, e.g. https://us-south.ml.cloud.ibm.com (no url required for openai)
 API_VERSION_AGENTS="" # only required for azure, e.g. 2024-12-01-preview
 API_KEY_AGENTS="" # agent api key
-REASONING_EFFORT_AGENTS="" # for o1, o1-mini, and o3-mini only e.g. low, medium, high
+REASONING_EFFORT_AGENTS="" # for o1, o1-mini, and o3-mini only, e.g. low, medium, high
 SEED_AGENTS=10 # sets the seed for the agent model
 TOP_P_AGENTS=0.95 # sets the top p for the agent model
 TEMPERATURE_AGENTS=0.0 # sets the temperature for the agent model

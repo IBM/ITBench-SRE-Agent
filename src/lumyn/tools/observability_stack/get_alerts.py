@@ -19,22 +19,22 @@ from typing import Any, Dict, Optional
 
 from crewai.tools.base_tool import BaseTool
 
-from .grafana_base_client import GrafanaBaseClient
+from .observability_stack_base_client import ObservabilityStackBaseClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
-class GetAlertsCustomTool(BaseTool, GrafanaBaseClient):
+class GetAlertsCustomTool(BaseTool, ObservabilityStackBaseClient):
     name: str = "GetAlerts Tool"
-    description: str = "Retrieves real-time alerts on the IT environment via the Grafana API."
+    description: str = "Retrieves real-time alerts on the IT environment via the Prometheus Alerts API."
     cache_function: bool = False
 
     def _run(self) -> str:
-        GrafanaBaseClient.model_post_init(self)
+        ObservabilityStackBaseClient.model_post_init(self)
         data = None
         try:
-            url = f"{self.grafana_url}/api/prometheus/grafana/api/v1/alerts"
+            url = f"{self.observability_stack_url}/prometheus/api/v1/alerts"
             response = self._make_request("GET", url)
             logger.info(f"GetAlertsCustomTool: {response.status_code}")
             logger.info(f"GetAlertsCustomTool: {response.content}")
@@ -44,11 +44,10 @@ class GetAlertsCustomTool(BaseTool, GrafanaBaseClient):
             if response.status_code == 200:
                 if len(data["data"]["alerts"]) == 0:
                     return None
-                alerts = list(filter(lambda i: i["state"] == "Alerting", data["data"]["alerts"]))
+                alerts = list(filter(lambda i: i["state"] == "firing", data["data"]["alerts"]))
                 return alerts
             return None
         except Exception as e:
-            print(f"Error querying Grafana Alerts API: {str(e)}")
-            logger.error(f"Error querying Grafana Alerts API: {str(e)}")
+            print(f"Error querying Prometheus Alerts API: {str(e)}")
+            logger.error(f"Error querying Prometheus Alerts API: {str(e)}")
             return None
- 

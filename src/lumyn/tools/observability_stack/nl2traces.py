@@ -84,8 +84,7 @@ class NL2TracesCustomTool(BaseTool, ObservabilityStackBaseClient):
             error_traces_only: bool = True,
             operation: Optional[str] = None) -> Optional[Dict[str, Any]]:
         try:
-            datasource_id = self.get_datasource_id("jaeger")
-            url = f"{self.observability_stack_url}/api/datasources/proxy/uid/{datasource_id}/api/traces"
+            url = f"{self.observability_stack_url}/jaeger/api/traces"
             if error_traces_only:
                 params = {
                     "service": service,
@@ -127,8 +126,7 @@ class NL2TracesCustomTool(BaseTool, ObservabilityStackBaseClient):
         
     def _get_services(self):
         try:
-            datasource_id = self.get_datasource_id("jaeger")
-            url = f"{self.observability_stack_url}/api/datasources/proxy/uid/{datasource_id}/api/services"
+            url = f"{self.observability_stack_url}/jaeger/api/services"
             response = self._make_request("GET", url)
             logger.info(
                 f"GetTracesFromObservabilityStack get_services: {response.status_code}")
@@ -146,8 +144,7 @@ class NL2TracesCustomTool(BaseTool, ObservabilityStackBaseClient):
 
     def _get_operations(self, service):
         try:
-            datasource_id = self.get_datasource_id("jaeger")
-            url = f"{self.observability_stack_url}/api/datasources/proxy/uid/{datasource_id}/api/operations"
+            url = f"{self.observability_stack_url}/jaeger/api/operations"
             params = {"service": service}
             response = self._make_request("GET", url, params=params)
             logger.info(

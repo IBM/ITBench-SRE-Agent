@@ -198,7 +198,7 @@ def get_llm_backend_for_agents():
                    top_p=TOP_P_AGENTS,
                    temperature=TEMPERATURE_AGENTS,
                    max_tokens=MAX_TOKENS_AGENTS,
-                   extra_headers={'RITS_API_KEY': API_KEY_TOOLS}
+                   extra_headers={'RITS_API_KEY': API_KEY_AGENTS}
                    )
     elif THINKING_AGENTS == "anthropic":
         return LLM(model=f"{PROVIDER_AGENTS}/{MODEL_AGENTS}",

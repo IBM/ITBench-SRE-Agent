@@ -26,7 +26,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from lumyn.tools.linting.promql_linter import PromQLLinter
 from lumyn.config.tools import NL2MetricsCustomToolInputPrompt, NL2MetricsCustomToolPrompt, NL2MetricsSystemPrompt, NL2MetricsPrompt
 
-from .grafana_base_client import GrafanaBaseClient
+from .observability_stack_base_client import ObservabilityStackBaseClient
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ class NL2MetricsCustomToolInput(BaseModel):
     )
 
 
-class NL2MetricsCustomTool(BaseTool, GrafanaBaseClient):
+class NL2MetricsCustomTool(BaseTool, ObservabilityStackBaseClient):
     name: str = "NL2Metrics Tool"
     description: str = NL2MetricsCustomToolPrompt
     llm_backend: Any = None
@@ -47,7 +47,7 @@ class NL2MetricsCustomTool(BaseTool, GrafanaBaseClient):
     args_schema: Type[BaseModel] = NL2MetricsCustomToolInput
 
     def _run(self, nl_query: str) -> str:
-        GrafanaBaseClient.model_post_init(self)
+        ObservabilityStackBaseClient.model_post_init(self)
         try:
             function_arguments = self._generate_promql_query(prompt=nl_query)
             lint_message = PromQLLinter.lint(function_arguments)
@@ -70,8 +70,7 @@ class NL2MetricsCustomTool(BaseTool, GrafanaBaseClient):
 
     def _query_prometheus_metrics(self, query: str) -> Optional[Dict[str, Any]]:
         try:
-            datasource_id = self.get_datasource_id("prometheus")
-            url = f"{self.grafana_url}/api/datasources/proxy/uid/{datasource_id}/api/v1/query"
+            url = f"{self.observability_stack_url}/prometheus/api/v1/query"
             params = {"query": query}
 
             response = self._make_request("GET", url, params=params)

@@ -25,8 +25,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from lumyn.tools.linting.jaeger_linter import JaegerLinter
 from lumyn.config.tools import NL2TracesCustomToolInputPrompt, NL2TracesCustomToolPrompt, NL2TracesSystemPrompt, NL2TracesPrompt
 
-from .custom_function_definitions_grafana import fd_query_jaeger_traces
-from .grafana_base_client import GrafanaBaseClient
+from .custom_function_definitions_observability_stack import fd_query_jaeger_traces
+from .observability_stack_base_client import ObservabilityStackBaseClient
 
 logging.basicConfig(
     level=logging.INFO,
@@ -41,7 +41,7 @@ class NL2TracesCustomToolInput(BaseModel):
     )
 
 
-class NL2TracesCustomTool(BaseTool, GrafanaBaseClient):
+class NL2TracesCustomTool(BaseTool, ObservabilityStackBaseClient):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     name: str = "NL2Traces Tool"
@@ -51,7 +51,7 @@ class NL2TracesCustomTool(BaseTool, GrafanaBaseClient):
     args_schema: Type[BaseModel] = NL2TracesCustomToolInput
 
     def _run(self, nl_query: str) -> str:
-        GrafanaBaseClient.model_post_init(self)
+        ObservabilityStackBaseClient.model_post_init(self)
         try:
             function_name, function_arguments, current_time = self._generate_jaeger_query(prompt=nl_query)
             services = self._get_services()
@@ -84,8 +84,7 @@ class NL2TracesCustomTool(BaseTool, GrafanaBaseClient):
             error_traces_only: bool = True,
             operation: Optional[str] = None) -> Optional[Dict[str, Any]]:
         try:
-            datasource_id = self.get_datasource_id("jaeger")
-            url = f"{self.grafana_url}/api/datasources/proxy/uid/{datasource_id}/api/traces"
+            url = f"{self.observability_stack_url}/jaeger/api/traces"
             if error_traces_only:
                 params = {
                     "service": service,
@@ -127,42 +126,40 @@ class NL2TracesCustomTool(BaseTool, GrafanaBaseClient):
         
     def _get_services(self):
         try:
-            datasource_id = self.get_datasource_id("jaeger")
-            url = f"{self.grafana_url}/api/datasources/proxy/uid/{datasource_id}/api/services"
+            url = f"{self.observability_stack_url}/jaeger/api/services"
             response = self._make_request("GET", url)
             logger.info(
-                f"GetTracesFromGrafana get_services: {response.status_code}")
+                f"GetTracesFromObservabilityStack get_services: {response.status_code}")
             logger.info(
-                f"GetTracesFromGrafana get_services: {response.content}")
-            print(f"GetTracesFromGrafana get_services: {response.status_code}")
-            print(f"GetTracesFromGrafana get_services: {response.content}")
+                f"GetTracesFromObservabilityStack get_services: {response.content}")
+            print(f"GetTracesFromObservabilityStack get_services: {response.status_code}")
+            print(f"GetTracesFromObservabilityStack get_services: {response.content}")
             return response.json()['data']
         except Exception as e:
             print(
-                f"Error querying GetTracesFromGrafana get_services: {str(e)}")
+                f"Error querying GetTracesFromObservabilityStack get_services: {str(e)}")
             logger.error(
-                f"Error querying GetTracesFromGrafana get_services: {str(e)}")
+                f"Error querying GetTracesFromObservabilityStack get_services: {str(e)}")
             return None
 
     def _get_operations(self, service):
         try:
-            datasource_id = self.get_datasource_id("jaeger")
-            url = f"{self.grafana_url}/api/datasources/proxy/uid/{datasource_id}/api/operations"
+            url = f"{self.observability_stack_url}/jaeger/api/operations"
             params = {"service": service}
             response = self._make_request("GET", url, params=params)
             logger.info(
-                f"GetTracesFromGrafana get_operations: {response.status_code}")
+                f"GetTracesFromObservabilityStack get_operations: {response.status_code}")
             logger.info(
-                f"GetTracesFromGrafana get_operations: {response.content}")
+                f"GetTracesFromObservabilityStack get_operations: {response.content}")
             print(
-                f"GetTracesFromGrafana get_operations: {response.status_code}")
-            print(f"GetTracesFromGrafana get_operations: {response.content}")
+                f"GetTracesFromObservabilityStack get_operations: {response.status_code}")
+            print(f"GetTracesFromObservabilityStack get_operations: {response.content}")
             return response.json()['data']
         except Exception as e:
             print(
-                f"Error querying GetTracesFromGrafana get_operations: {str(e)}"
+                f"Error querying GetTracesFromObservabilityStack get_operations: {str(e)}"
             )
             logger.error(
-                f"Error querying GetTracesFromGrafana get_operations: {str(e)}"
+                f"Error querying GetTracesFromObservabilityStack get_operations: {str(e)}"
             )
             return None

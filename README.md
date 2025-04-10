@@ -51,11 +51,11 @@ MAX_TOKENS_TOOLS=16000 # see above
 WX_PROJECT_ID="" # required only when using a watsonx model
 
 # Linux
-OBSERVABILITY_STACK_URL=http://localhost:8080/prometheus
+OBSERVABILITY_STACK_URL="http://localhost:8080/prometheus"
 TOPOLOGY_URL="http://localhost:8080/topology"
 
 # Mac
-OBSERVABILITY_STACK_URL=http://localhost:8080/prometheus
+OBSERVABILITY_STACK_URL="http://localhost:8080/prometheus"
 TOPOLOGY_URL="http://localhost:8080/topology"
 
 # DO NOT ALTER THESE VALUES

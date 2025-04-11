@@ -26,8 +26,6 @@ RUN mkdir -p /app/lumyn && \
     chgrp -R 0 /app && \
     chmod -R g=u /app
 
-RUN mkdir -p /app/lumyn/outputs
-
 # Install Python dependencies
 RUN pip install --no-cache-dir uv
 RUN pip install --no-cache-dir crewai

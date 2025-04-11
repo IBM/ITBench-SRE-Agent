@@ -23,10 +23,9 @@ from dotenv import load_dotenv
 from lumyn.llm_backends.init_backend import (get_llm_backend_for_agents,
                                                     get_llm_backend_for_tools)
 from lumyn.tools.code_generation.nl2script import NL2ScriptCustomTool
-from lumyn.tools.grafana.get_alerts import GetAlertsCustomTool
-from lumyn.tools.grafana.nl2logs import NL2LogsCustomTool
-from lumyn.tools.grafana.nl2metrics import NL2MetricsCustomTool
-from lumyn.tools.grafana.nl2traces import NL2TracesCustomTool
+from lumyn.tools.observability_stack.get_alerts import GetAlertsCustomTool
+from lumyn.tools.observability_stack.nl2metrics import NL2MetricsCustomTool
+from lumyn.tools.observability_stack.nl2traces import NL2TracesCustomTool
 from lumyn.tools.kubectl.nl2kubectl import NL2KubectlCustomTool
 from lumyn.tools.remediation.remediation import RemediationCustomTool
 from lumyn.tools.remediation.wait import WaitCustomTool
@@ -76,7 +75,6 @@ class LumynCrew():
                         NL2KubectlCustomTool(llm_backend=get_llm_backend_for_tools()),
                         NL2MetricsCustomTool(llm_backend=get_llm_backend_for_tools()),
                         NL2TracesCustomTool(llm_backend=get_llm_backend_for_tools()),
-                        NL2LogsCustomTool(llm_backend=get_llm_backend_for_tools())
                      ],
                      allow_delegation=False,
                      max_iter=20,
@@ -107,7 +105,6 @@ class LumynCrew():
                 NL2KubectlCustomTool(llm_backend=get_llm_backend_for_tools()),
                 NL2MetricsCustomTool(llm_backend=get_llm_backend_for_tools()),
                 NL2TracesCustomTool(llm_backend=get_llm_backend_for_tools()),
-                NL2LogsCustomTool(llm_backend=get_llm_backend_for_tools())
             ],
             human_input=False,
             callback=DiagnosisJSONReportCustomTool(

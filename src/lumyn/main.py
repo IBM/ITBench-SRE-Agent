@@ -22,9 +22,9 @@ import time
 import subprocess
 
 from lumyn.crew import LumynCrew
-from lumyn.tools.grafana.get_alerts import GetAlertsCustomTool
+from lumyn.tools.observability_stack.get_alerts import GetAlertsCustomTool
 from lumyn.tools.kubectl.nl2kubectl import NL2KubectlCustomTool
-from lumyn.tools.grafana.get_topology_nodes import GetTopologyNodes
+from lumyn.tools.observability_stack.get_topology_nodes import GetTopologyNodes
 from lumyn.llm_backends.init_backend import (get_llm_backend_for_tools)
 
 # This main file is intended to be a way for your to run your

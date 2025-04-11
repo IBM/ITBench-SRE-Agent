@@ -51,12 +51,12 @@ MAX_TOKENS_TOOLS=16000 # see above
 WX_PROJECT_ID="" # required only when using a watsonx model
 
 # Linux
-OBSERVABILITY_STACK_URL="http://localhost:8080/grafana"
-TOPOLOGY_URL="http://localhost:8081"
+OBSERVABILITY_STACK_URL="http://localhost:8080/prometheus"
+TOPOLOGY_URL="http://localhost:8080/topology"
 
 # Mac
-OBSERVABILITY_STACK_URL="http://docker.host.internal:8080/grafana"
-TOPOLOGY_URL="http://docker.host.internal:8081"
+OBSERVABILITY_STACK_URL="http://localhost:8080/prometheus"
+TOPOLOGY_URL="http://localhost:8080/topology"
 
 # DO NOT ALTER THESE VALUES
 AGENT_TASK_DIRECTORY="config"

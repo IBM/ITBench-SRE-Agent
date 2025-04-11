@@ -51,11 +51,11 @@ MAX_TOKENS_TOOLS=16000 # see above
 WX_PROJECT_ID="" # required only when using a watsonx model
 
 # Linux
-GRAFANA_URL="http://localhost:8080/grafana"
+OBSERVABILITY_STACK_URL="http://localhost:8080/grafana"
 TOPOLOGY_URL="http://localhost:8081"
 
 # Mac
-GRAFANA_URL="http://docker.host.internal:8080/grafana"
+OBSERVABILITY_STACK_URL="http://docker.host.internal:8080/grafana"
 TOPOLOGY_URL="http://docker.host.internal:8081"
 
 # DO NOT ALTER THESE VALUES
@@ -65,7 +65,7 @@ STRUCTURED_UNSTRUCTURED_OUTPUT_DIRECTORY_PATH="/app/lumyn/outputs"
 SRE_AGENT_NAME_VERSION_NUMBER="Test"
 EXP_NAME="Test"
 GOD_MODE="True"
-GRAFANA_SERVICE_ACCOUNT_TOKEN="not_required" 
+OBSERVABILITY_STACK_SERVICE_ACCOUNT_TOKEN="not_required"
 KUBECONFIG="/app/lumyn/config"
 ```
 

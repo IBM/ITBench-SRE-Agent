@@ -69,9 +69,9 @@
       MAX_TOKENS_TOOLS="{{ max_tokens_tools }}"
       GOD_MODE="{{ god_mode if god_mode is defined else 'False' }}"
       KUBECONFIG="{{ kubeconfig_path_inside_ee.stdout }}"
-      GRAFANA_URL="{{ grafana_url }}"
+      OBSERVABILITY_STACK_URL="{{ observability_stack_url }}"
       TOPOLOGY_URL="{{ topology_url }}"
-      GRAFANA_SERVICE_ACCOUNT_TOKEN="{{ grafana_service_account_token }}"
+      OBSERVABILITY_STACK_SERVICE_ACCOUNT_TOKEN="{{ observability_stack_service_account_token }}"
       STRUCTURED_UNSTRUCTURED_OUTPUT_DIRECTORY_PATH="/runner/outputs"
       WX_PROJECT_ID="{{ wx_project_id }}"
 
@@ -118,9 +118,9 @@
       MAX_TOKENS_TOOLS="{{ max_tokens_tools }}"
       GOD_MODE="{{ god_mode if god_mode is defined else 'False' }}"
       KUBECONFIG="{{ kubeconfig_path_inside_ee.stdout }}"
-      GRAFANA_URL="{{ grafana_url }}"
+      OBSERVABILITY_STACK_URL="{{ observability_stack_url }}"
       TOPOLOGY_URL="{{ topology_url }}"
-      GRAFANA_SERVICE_ACCOUNT_TOKEN="{{ grafana_service_account_token }}"
+      OBSERVABILITY_STACK_SERVICE_ACCOUNT_TOKEN="{{ observability_stack_service_account_token }}"
       STRUCTURED_UNSTRUCTURED_OUTPUT_DIRECTORY_PATH="/runner/outputs"
       WX_PROJECT_ID="{{ wx_project_id }}"
   register: content_for_metadata

@@ -71,7 +71,7 @@
       KUBECONFIG="{{ kubeconfig_path_inside_ee.stdout }}"
       OBSERVABILITY_STACK_URL="{{ observability_stack_url }}"
       TOPOLOGY_URL="{{ topology_url }}"
-      OBSERVABILITY_STACK_SERVICE_ACCOUNT_TOKEN="{{ observability_stack_service_account_token }}"
+      OBSERVABILITY_STACK_SERVICE_ACCOUNT_TOKEN="NOT_NEEDED"
       STRUCTURED_UNSTRUCTURED_OUTPUT_DIRECTORY_PATH="/runner/outputs"
       WX_PROJECT_ID="{{ wx_project_id }}"
 
@@ -120,7 +120,7 @@
       KUBECONFIG="{{ kubeconfig_path_inside_ee.stdout }}"
       OBSERVABILITY_STACK_URL="{{ observability_stack_url }}"
       TOPOLOGY_URL="{{ topology_url }}"
-      OBSERVABILITY_STACK_SERVICE_ACCOUNT_TOKEN="{{ observability_stack_service_account_token }}"
+      OBSERVABILITY_STACK_SERVICE_ACCOUNT_TOKEN="NOT_NEEDED"
       STRUCTURED_UNSTRUCTURED_OUTPUT_DIRECTORY_PATH="/runner/outputs"
       WX_PROJECT_ID="{{ wx_project_id }}"
   register: content_for_metadata

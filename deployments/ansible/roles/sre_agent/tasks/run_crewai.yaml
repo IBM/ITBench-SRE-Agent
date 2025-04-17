@@ -203,7 +203,7 @@
 - name: Record agent run or execution time completion
   ansible.builtin.copy:
     content: "{{ now(utc=true,fmt='%Y-%m-%dT%H:%M:%S.%f') }}"
-    dest: /runner/outputs/agent_execution_completed_or_exited_at.txt
+    dest: /tmp/agent_execution_completed_or_exited_at.txt
   tags:
     - sre_agent
 
@@ -217,10 +217,21 @@
     - sre_agent
   when: run_uuid is defined and scenario_number is defined and run_number is defined
 
+- name: Upload the agent_execution_completed_or_exited_at text to S3
+  amazon.aws.s3_object:
+    endpoint_url: "{{ s3_endpoint_url }}"
+    bucket: "{{ s3_bucket_name_for_results }}"
+    object: "/{{ sre_agent_name__version_number }}/{{run_uuid}}/{{scenario_number}}/{{run_number}}/agent_execution_completed_or_exited_at.txt"
+    src: "/tmp/agent_execution_completed_or_exited_at.txt"
+    mode: put
+  tags:
+    - sre_agent
+  when: run_uuid is defined and scenario_number is defined and run_number is defined
+
 - name: Remove the temporary file
   ansible.builtin.file:
     path: "{{ tempfile_for_crewai_run.path }}"
     state: absent
-  when: tempfile_for_crewai_run.path is defined
   tags:
     - sre_agent
+  when: tempfile_for_crewai_run.path is defined

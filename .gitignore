@@ -138,9 +138,6 @@ instana.toml
 # Visual Studio Code
 .vscode/*
 
-# Topology, taxonomy files
-outputs/
-
 # Apple Users
 .DS_Store
 

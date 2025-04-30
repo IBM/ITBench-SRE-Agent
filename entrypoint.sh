@@ -7,8 +7,8 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --host) host="$2"; shift 2 ;;
     --port) port="$2"; shift 2 ;;
-    --root_path) runner_id="$2"; shift 2 ;;
-    --benchmark_timeout) token="$2"; shift 2 ;;
+    --root_path) root_path="$2"; shift 2 ;;
+    --benchmark_timeout) benchmark_timeout="$2"; shift 2 ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
 done

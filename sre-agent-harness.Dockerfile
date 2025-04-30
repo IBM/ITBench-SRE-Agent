@@ -1,10 +1,10 @@
-FROM agent-harness:latest
+FROM ghcr.io/ibm/itbench-utilities/agent-harness-base:0.0.3 AS base
 
-WORKDIR /app
+WORKDIR /etc
 
 # COPY THE AGENT REPO
 COPY . ./lumyn
-WORKDIR /app/lumyn
+WORKDIR /etc/lumyn
 
 # INSTALL AGENT DEPENDENCIES
 RUN pip install uv
@@ -19,6 +19,9 @@ RUN mkdir -p outputs
 RUN mkdir -p outputs/agent_evaluation
 
 # SET OUTPUT DIRECTORY. SHOULD BE THE SAME AS IN AGENT HARNESS
-ENV STRUCTURED_UNSTRUCTURED_OUTPUT_DIRECTORY_PATH="/app/lumyn/outputs/agent_evaluation/"
+ENV STRUCTURED_UNSTRUCTURED_OUTPUT_DIRECTORY_PATH="/etc/lumyn/outputs/agent_evaluation/"
 
-WORKDIR /app/agent-benchmark
+WORKDIR /etc/agent-benchmark
+
+RUN chmod +x /etc/lumyn/entrypoint.sh
+ENTRYPOINT ["/etc/lumyn/entrypoint.sh"]

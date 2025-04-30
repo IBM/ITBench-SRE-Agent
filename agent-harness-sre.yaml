@@ -18,8 +18,8 @@ run:
     jq -r .kubeconfig ${tmpdir}/scenario_data.json > ${tmpdir}/kubeconfig.yaml
     grafana_url=$(jq -r .grafana_url ${tmpdir}/scenario_data.json)
     export KUBECONFIG=${tmpdir}/kubeconfig.yaml
-    export GRAFANA_URL=${grafana_url}
-    export TOPOLOGY_URL=${grafana_url}
+    export OBSERVABILITY_STACK_URL=${grafana_url}
+    export TOPOLOGY_URL=${grafana_url}/topology
     # run agent
     crewai run > /tmp/agent_run.out 2>&1
     # finish agent

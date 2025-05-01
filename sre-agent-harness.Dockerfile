@@ -6,13 +6,16 @@ WORKDIR /etc
 COPY . ./lumyn
 WORKDIR /etc/lumyn
 
-# INSTALL AGENT DEPENDENCIES
-RUN pip install uv
-RUN pip install crewai crewai-tools
-RUN crewai install
+# Install OS-related dependencies
+RUN apt-get install -y jq
 RUN curl -LO https://dl.k8s.io/release/v1.31.0/bin/linux/$(dpkg --print-architecture)/kubectl && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl
+
+# Install Agent-related dependencies
+RUN pip install uv
+RUN pip install crewai crewai-tools
+RUN crewai install
 
 # CREATE OUTPUT DIRECTORY
 RUN mkdir -p outputs

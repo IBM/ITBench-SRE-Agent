@@ -7,6 +7,8 @@ NL2MetricsCustomToolInputPrompt="PromQL query to execute."
 NL2MetricsCustomToolPrompt="Generates and executes PromQL queries to retrieve metrics from Prometheus via the Grafana API. Use this tool to query resource usage metrics (CPU, memory, network, etc.) for specific Kubernetes entities. Example queries:'Get the average CPU usage of `pod-456` in namespace `complex-us` over the last hour.', 'Retrieve the network received bytes for `pod-789` in namespace `simple-us` over the last 10 minutes.', 'Fetch the total memory utilization of deployment `front` in namespace `simple-us` currently.'"
 NL2LogsCustomToolInputPrompt="NL query to execute."
 NL2LogsCustomToolPrompt="Converts natural language to LogQL queries and executes them to access logs (and other information) from Loki via the Grafana API. When using the NL2Logs Tool you could ask queries like: get the logs from the payment deployment get the logs from the worker-node-1 kubernetes host get the logs from the payment service with label app=payment NL2Logs only works for logs from services using their app name."
+NL2SQLCustomToolInputPrompt="Natural language query to convert to a ClickHouse SQL query/statement."
+NL2SQLCustomToolPrompt="Converts natural language queries into ClickHouse SQL statements and executes them to retrieve data from ClickHouse databases."
 
 # ICL
 NL2KubectlICL="""
@@ -119,15 +121,36 @@ OUTPUT: {source="kubernetes-event-exporter"} |= `"namespace":"simple-us"` |= `"k
 
 END OF EXAMPLES
 """
+NL2SQLICL="""
+#THIS NEEDS TO BE UPDATED TO THE FULL FUNCTION CALL INSTEAD OF JUST THE SQL QUERY
+
+EXAMPLE INPUTS AND OUTPUTS
+
+INPUT: get the count of logs from otel_demo_logs table
+OUTPUT: SELECT count(*) FROM otel_demo_logs
+
+INPUT: show me all logs for service payment from otel_demo_logs
+OUTPUT: SELECT * FROM otel_demo_logs WHERE ServiceName = 'payment'
+
+INPUT: find logs containing error in the body from otel_demo_logs
+OUTPUT: SELECT * FROM otel_demo_logs WHERE lower(Body) LIKE '%error%'
+
+INPUT: show recent logs from otel_demo_logs in the last 10 minutes
+OUTPUT: SELECT * FROM otel_demo_logs WHERE Timestamp >= now() - INTERVAL 10 MINUTE ORDER BY Timestamp DESC
+
+END OF EXAMPLES
+"""
 
 # Tool System Prompts
 NL2KubectlSystemPrompt="You write kubectl commands. Answer with only the correct kubectl command."
 NL2TracesSystemPrompt="You are a function calling bot. You are given a prompt and you need to generate a tool call based on the prompt. Make sure to fill the parameters correctly. If no timeframe is given always get the last 10 minutes of traces."
 NL2MetricsSystemPrompt="You write PromQL queries. Answer with only the correct PromQL query. The formatting should always be like this: ```promql\n<promql query>\n```"
 NL2LogsSystemPrompt="Provide the correct tool call for querying loki logs using parameters provided in the input. For the LogQL query generate it using the input as instructions. Do not wrap the LogQL query in any tags or special formatting."
+NL2SQLSystemPrompt="You write SQL queries. Answer with only the correct SQL query. The formatting should always be like this: ```sql\n<sql query>\n```"
 
 # Tool Prompts
 NL2KubectlPrompt=f"{NL2KubectlICL}\n\nThe formatting should always be like this: ```bash\n<kubectl command>\n``` Convert this query into a kubectl command: "
 NL2TracesPrompt=f"{NL2TracesICL}\n\nProvide the correct tool call for this action: "
 NL2MetricsPrompt=f"{NL2MetricsICL}\n\nWrite a PromQL query to do the following: "
 NL2LogsPrompt=f"{NL2LogsICL}\n\nWrite a LogQL query to do the following and return it in a tool call to query_loki_logs: "
+NL2SQLPrompt=f"{NL2SQLICL}\n\n Write a SQL query to do the following"

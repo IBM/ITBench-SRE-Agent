@@ -21,6 +21,8 @@ dependencies = [
     "crewai==0.105.0",
     "litellm==1.60.2",
     "pyyaml>=6.0.2",
+    "clickhouse-connect>=0.8.17",
+    "sqlfluff>=3.4.0",
 ]
 
 [project.scripts]

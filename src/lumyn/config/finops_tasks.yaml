@@ -1,0 +1,6 @@
+data_query_task:
+  description: >
+    Given a request in natural language return the relevant data from ClickHouse
+  expected_output: >
+    A report with summary of the returned data
+  agent: finops_data_query_agent

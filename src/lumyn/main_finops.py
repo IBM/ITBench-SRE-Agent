@@ -33,7 +33,7 @@ def run():
         subprocess.run('crewai reset-memories -a', shell=True, capture_output=False, text=True)
     except:
         print("no memories to clear")
-
+    inputs = {}
     LumynFinOpsCrew().crew().kickoff(inputs=inputs)
 
 
@@ -45,7 +45,7 @@ def train():
         "topic": "FinOps-related diagnosis for an IT environment."
     }
     try:
-        LumynCrew().crew().train(n_iterations=int(sys.argv[1]),
+        LumynFinOpsCrew().crew().train(n_iterations=int(sys.argv[1]),
                                  filename=sys.argv[2],
                                  inputs=inputs)
 

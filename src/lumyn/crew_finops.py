@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 
 from lumyn.llm_backends.init_backend import (get_llm_backend_for_agents,
                                                     get_llm_backend_for_tools)
+from lumyn.tools.human_tool import HumanCustomTool
 from lumyn.tools.observability_stack.clickhouse_nl2sql import NL2SQLClickHouseCustomTool
 
 load_dotenv()
@@ -30,21 +31,14 @@ load_dotenv()
 @CrewBase
 class LumynFinOpsCrew():
 
+    agents_config = os.path.join(
+            os.getenv("AGENT_TASK_DIRECTORY"), "finops_agents.yaml")
+    tasks_config = os.path.join(
+            os.getenv("AGENT_TASK_DIRECTORY"), "finops_tasks.yaml")
+
     def __init__(self, callback_agent=None, callback_task=None):
         self.callback_task = None
         self.callback_agent = None
-
-        if os.getenv("AGENT_TASK_DIRECTORY"):
-            print("Using custom configuration...")
-            self.agents_config = os.path.join(
-                os.getenv("AGENT_TASK_DIRECTORY"), "finops_agents.yaml")
-            self.tasks_config = os.path.join(os.getenv("AGENT_TASK_DIRECTORY"),
-                                             "finops_tasks.yaml")
-        else:
-            # TODO: Switch to logging
-            print("Using default configuration...")
-            self.agents_config = "config/finops_agents.yaml"
-            self.tasks_config = "config/finops_tasks.yaml"
 
         try:
             if callback_agent is not None and callback_task is not None:
@@ -67,6 +61,15 @@ class LumynFinOpsCrew():
                      verbose=True,
                      respect_context_window=True,
                      human_input=False)
+
+    @task
+    def finops_human_input_query_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["finops_human_input_query_task"],
+            verbose=True,
+            tools=[
+                HumanCustomTool()
+            ])
 
     @task
     def finops_data_query_task(self) -> Task:

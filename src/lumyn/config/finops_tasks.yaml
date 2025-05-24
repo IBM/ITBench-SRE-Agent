@@ -1,4 +1,11 @@
-data_query_task:
+finops_human_input_query_task:
+  description: >
+    A mechanism to take input from the human.
+  expected_output: >
+    Query from the human in natural language.
+  agent: finops_data_query_agent
+
+finops_data_query_task:
   description: >
     Given a request in natural language return the relevant data from ClickHouse
   expected_output: >
